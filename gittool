@@ -59,7 +59,7 @@ main(){
 	    getChangeFiles
 	  ;;
 	  'cleanFiles')
-	    deleteUntrackedFiles
+	    deleteChangeFiles
 	  ;;
     '-h' | '--help')
       help
