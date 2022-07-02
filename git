@@ -29,19 +29,25 @@ resetToLast(){
   fetchAll;
   resetHard "$1";
   git pull
-  deleteUntrackedFiles;
+  deleteChangeFiles;
   git diff;
   git status;
 }
 
 # 获取未添加到git分支的文件
-getUntrackedFiles(){
+getChangeFiles(){
   git status --porcelain 2>/dev/null | awk '{print $2}'
 }
 
 # 删除未添加到git分支的所有文件
-deleteUntrackedFiles(){
-  getUntrackedFiles | xargs -n1 rm -rf
+deleteChangeFiles(){
+  getChangeFiles | xargs -n1 rm -rf
+}
+
+help() {
+  printf "resetToLast [branchName]\n"
+  printf "getChangeFiles\n"
+  printf "cleanFiles\n"
 }
 
 main(){
@@ -49,16 +55,21 @@ main(){
     'resetToLast')
       resetToLast "$2"
 	  ;;
-	  'getUntrackedFiles')
-	    getUntrackedFiles
+	  'getChangeFiles')
+	    getChangeFiles
 	  ;;
 	  'cleanFiles')
 	    deleteUntrackedFiles
 	  ;;
+    '-h' | '--help')
+      help
+      ;;
     *)
-      echo 'no options!!'
+      printf 'no options!!\n'
+      help
     ;;
   esac
 }
 
 main "$@";
+
