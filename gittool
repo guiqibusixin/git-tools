@@ -29,9 +29,9 @@ resetHard(){
 # 重制到最新的分支版本
 resetToLast(){
   fetchAll;
+  deleteChangeFiles;
   resetHard "$1";
   git pull
-  deleteChangeFiles;
   git diff;
   git status;
 }
