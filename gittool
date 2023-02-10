@@ -1,7 +1,19 @@
 #!/bin/sh
 
 set -e
-# set -x 
+# set -x
+gitRoot='' 
+
+# 获取git项目目录
+getGitRoot(){
+  root=$(pwd)
+  if [ -d "./.git" ]; then
+    echo "$root"
+  else 
+    [ "$root" != "/" ] && cd ../ && getGitRoot 
+  fi
+  cd "$root"
+}
 
 # 拉取远程分支
 fetchAll(){
@@ -50,9 +62,18 @@ help() {
   printf "resetToLast [branchName]\n"
   printf "getChangeFiles\n"
   printf "cleanFiles\n"
+  printf "getGitRoot\n"
 }
 
 main(){
+  # 切换至git主目录
+  gitRoot=$(getGitRoot)
+  if [ -z "$gitRoot" ]; then
+    printf "Not a git repository (or any of the parent directories): .git\n"
+    exit 1
+  fi
+  cd "$gitRoot" || exit 1
+
   case $1 in
     'resetToLast')
       resetToLast "$2"
@@ -63,6 +84,9 @@ main(){
 	  'cleanFiles')
 	    deleteChangeFiles
 	  ;;
+    'getGitRoot')
+      echo "$gitRoot"
+    ;;
     '-h' | '--help')
       help
       ;;
